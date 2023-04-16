@@ -1,6 +1,7 @@
 package ua.goit.users;
 
 import com.google.gson.reflect.TypeToken;
+import ua.goit.dto.NewUserDto;
 import ua.goit.dto.UserDto;
 import ua.goit.utils.HttpUtils;
 
@@ -12,7 +13,7 @@ import java.net.http.HttpResponse;
 import java.util.List;
 
 public class UserService {
-    private HttpResponse<String> makeGetRequest (URI uri) throws IOException, InterruptedException {
+    private HttpResponse<String> makeGetRequest(URI uri) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .GET()
@@ -22,10 +23,11 @@ public class UserService {
 
     public List<UserDto> getUsers() {
         try {
-            URI uri = new URI(HttpUtils.BASE_URL.append("/users").toString());
+            URI uri = new URI(HttpUtils.BASE_URL + "/users");
             HttpResponse<String> response = makeGetRequest(uri);
 
-            return HttpUtils.gson.fromJson(response.body(), new TypeToken<List<UserDto>>(){}.getType());
+            return HttpUtils.gson.fromJson(response.body(), new TypeToken<List<UserDto>>() {
+            }.getType());
         } catch (URISyntaxException | InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -33,7 +35,7 @@ public class UserService {
 
     public UserDto getUserById(int id) {
         try {
-            URI uri = new URI(HttpUtils.BASE_URL.append("/users/").append(id).toString());
+            URI uri = new URI(HttpUtils.BASE_URL + "/users/" + id);
             HttpResponse<String> response = makeGetRequest(uri);
 
             return HttpUtils.gson.fromJson(response.body(), UserDto.class);
@@ -44,10 +46,43 @@ public class UserService {
 
     public List<UserDto> getUserByName(String username) {
         try {
-            URI uri = new URI(HttpUtils.BASE_URL.append("/users?username=").append(username).toString());
+            URI uri = new URI(HttpUtils.BASE_URL + "/users?username=" + username);
             HttpResponse<String> response = makeGetRequest(uri);
 
-            return HttpUtils.gson.fromJson(response.body(), new TypeToken<List<UserDto>>(){}.getType());
+            return HttpUtils.gson.fromJson(response.body(), new TypeToken<List<UserDto>>() {
+            }.getType());
+        } catch (URISyntaxException | InterruptedException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean createUser(NewUserDto newUser) {
+        try {
+            URI uri = new URI(HttpUtils.BASE_URL + "/users");
+            String body = HttpUtils.gson.toJson(newUser);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .POST(HttpRequest.BodyPublishers.ofString(body))
+                    .build();
+            HttpResponse<String> response = HttpUtils.CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return response.statusCode() == 201;
+        } catch (URISyntaxException | InterruptedException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean updateUser(UserDto updatedUser) {
+        try {
+            URI uri = new URI(HttpUtils.BASE_URL + "/users");
+            String body = HttpUtils.gson.toJson(updatedUser);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .POST(HttpRequest.BodyPublishers.ofString(body))
+                    .build();
+            HttpResponse<String> response = HttpUtils.CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return response.statusCode() == 201;
         } catch (URISyntaxException | InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }

@@ -2,7 +2,7 @@ package ua.goit.dto;
 
 import java.util.Objects;
 
-public record GeoDto(String lat, String lng) {
+public record GeoDto(double lat, double lng) {
 
     @Override
     public boolean equals(Object o) {

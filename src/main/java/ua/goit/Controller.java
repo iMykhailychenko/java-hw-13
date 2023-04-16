@@ -1,79 +1,73 @@
 package ua.goit;
 
+import ua.goit.dto.NewUserDto;
+import ua.goit.dto.UserDto;
 import ua.goit.users.UserService;
 
-import java.util.List;
-import java.util.Scanner;
-import java.util.function.Supplier;
+import java.util.InputMismatchException;
+
 
 public class Controller {
-    private final UserService userService = new UserService();
+    private final View view;
+    private final UserService userService;
 
-    public void runApp() {
-        showInitMessage();
-        parseUserCode(getUserInput());
+    public Controller(View view, UserService userService) {
+        this.view = view;
+        this.userService = userService;
     }
 
-    private void parseUserCode(int code) {
+    public void runApp() {
+        view.showInitMessage();
+        parseUserCode(view.getUserInput());
+    }
+
+    public void parseUserCode(int code) {
         switch (code) {
-            case 4: {
-                printResult(userService::getUsers);
+            case 0 -> {
+                return;
+            }
+            case 1 -> {
+                NewUserDto newUserDto = view.generateNewUser();
+                view.printResult(() -> userService.createUser(newUserDto)
+                        ? "Success! User created"
+                        : "An error occurred");
                 break;
             }
-            case 5: {
-                printResult(() -> {
-                    System.out.println("Enter user ID:");
-                    Scanner scanner = new Scanner(System.in);
-                    int id = scanner.nextInt();
-
-                    return userService.getUserById(id);
-                });
+            case 2 -> {
+                try {
+                    UserDto updatedUser = view.getUserForUpdate(userService::getUserById);
+                    view.printResult(() -> userService.updateUser(updatedUser) ? "Success! User updated" : "An error occurred");
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid integer.");
+                }
                 break;
             }
-            case 6: {
-                printResult(() -> {
-                    System.out.println("Enter username:");
-                    Scanner scanner = new Scanner(System.in);
-                    String username = scanner.nextLine();
-
-                    return userService.getUserByName(username);
-                });
+            case 4 -> {
+                view.printResult(userService::getUsers);
                 break;
             }
-
-            default: {
+            case 5 -> {
+                try {
+                    int userId = view.getUserId();
+                    view.printResult(() -> userService.getUserById(userId));
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid integer.");
+                }
+                break;
+            }
+            case 6 -> {
+                view.printResult(() -> userService.getUserByName(view.getUserName()));
+                break;
+            }
+            case 7 -> {
+                view.showInitMessage();
+                break;
+            }
+            default -> {
                 System.out.println("Unknown code. Try again");
             }
         }
 
-        parseUserCode(getUserInput());
-    }
-
-    private void showInitMessage() {
-        System.out.println("""
-                Enter the number to perform a specific action:
-                1 - Creating a new user
-                2 - Update user data
-                3 - Delete the user
-                4 - Get information about all users
-                5 - Get information about the user by id
-                6 - Get information about the user by username""");
-    }
-
-    private int getUserInput() {
-        System.out.println("\n\nEnter action number:");
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextInt();
-    }
-
-    private void printResult(Supplier<?> callback) {
-        System.out.println("Start loading ...");
-        Object result = callback.get();
-
-        if (result instanceof List<?>) {
-            ((List<?>) result).forEach(System.out::println);
-        } else {
-            System.out.println(result);
-        }
+        parseUserCode(view.getUserInput());
     }
 }

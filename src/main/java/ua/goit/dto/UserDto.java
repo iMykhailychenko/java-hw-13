@@ -2,8 +2,8 @@ package ua.goit.dto;
 
 import java.util.Objects;
 
-public record UserDto(int id, String name, String username, String phone, String website, String email,
-                      AddressDto address, CompanyDto company) {
+public record UserDto(int id, String name, String username, String phone, String website,
+                      String email, AddressDto address, CompanyDto company) {
 
     @Override
     public boolean equals(Object o) {
@@ -15,14 +15,14 @@ public record UserDto(int id, String name, String username, String phone, String
     @Override
     public String toString() {
         return "UserDto{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", username='" + username + '\'' +
-                ", phone='" + phone + '\'' +
-                ", website='" + website + '\'' +
-                ", email='" + email + '\'' +
-                ", address=" + address +
-                ", company=" + company +
-                '}';
+                "\n id=" + id +
+                ",\n name='" + name + '\'' +
+                ",\n username='" + username + '\'' +
+                ",\n phone='" + phone + '\'' +
+                ",\n website='" + website + '\'' +
+                ",\n email='" + email + '\'' +
+                ",\n address=" + address +
+                ",\n company=" + company +
+                "\n}";
     }
 }
