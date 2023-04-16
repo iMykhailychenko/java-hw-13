@@ -35,8 +35,20 @@ public class Controller {
             }
             case 2 -> {
                 try {
-                    UserDto updatedUser = view.getUserForUpdate(userService::getUserById);
+                    int userId = view.getUserId();
+                    System.out.println("Getting user info ...");
+                    UserDto updatedUser = view.updateUserData(userService.getUserById(userId));
+
                     view.printResult(() -> userService.updateUser(updatedUser) ? "Success! User updated" : "An error occurred");
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid integer.");
+                }
+                break;
+            }
+            case 3 -> {
+                try {
+                    int userId = view.getUserId();
+                    view.printResult(() -> userService.deleteUserById(userId) ? "Success! User deleted" : "An error occurred");
                 } catch (InputMismatchException e) {
                     System.out.println("Invalid input. Please enter a valid integer.");
                 }

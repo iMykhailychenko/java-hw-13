@@ -33,9 +33,9 @@ public class UserService {
         }
     }
 
-    public UserDto getUserById(int id) {
+    public UserDto getUserById(int userId) {
         try {
-            URI uri = new URI(HttpUtils.BASE_URL + "/users/" + id);
+            URI uri = new URI(HttpUtils.BASE_URL + "/users/" + userId);
             HttpResponse<String> response = makeGetRequest(uri);
 
             return HttpUtils.gson.fromJson(response.body(), UserDto.class);
@@ -83,6 +83,21 @@ public class UserService {
             HttpResponse<String> response = HttpUtils.CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
 
             return response.statusCode() == 201;
+        } catch (URISyntaxException | InterruptedException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean deleteUserById(int userId) {
+        try {
+            URI uri = new URI(HttpUtils.BASE_URL + "/users/" + userId);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .DELETE()
+                    .build();
+            HttpResponse<String> response = HttpUtils.CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+
+            return response.statusCode() == 200;
         } catch (URISyntaxException | InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }

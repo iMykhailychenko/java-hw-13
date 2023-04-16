@@ -5,7 +5,6 @@ import ua.goit.dto.*;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class View {
@@ -86,14 +85,6 @@ public class View {
         String email = getUserInputOrDefault("Enter email", "Lucio_Hettinger@annie.ca");
 
         return new NewUserDto(name, username, phone, website, email, getDefaultAddress(), getDefaultCompany());
-    }
-
-    public UserDto getUserForUpdate(Function<Integer, UserDto> callback) throws InputMismatchException {
-        int userId = getUserId();
-
-        System.out.println("Start loading ...");
-        UserDto oldUser = callback.apply(userId);
-        return updateUserData(oldUser);
     }
 
     public UserDto updateUserData(UserDto oldUserData) {
