@@ -4,7 +4,6 @@ import java.util.Objects;
 
 public record NewUserDto(String name, String username, String phone, String website,
                          String email, AddressDto address, CompanyDto company) {
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -1,4 +1,4 @@
-package ua.goit.users;
+package ua.goit.services;
 
 import com.google.gson.reflect.TypeToken;
 import ua.goit.dto.NewUserDto;
@@ -12,19 +12,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-public class UserService {
-    private HttpResponse<String> makeGetRequest(URI uri) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .GET()
-                .build();
-        return HttpUtils.CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-    }
-
+public class UsersService {
     public List<UserDto> getUsers() {
         try {
             URI uri = new URI(HttpUtils.BASE_URL + "/users");
-            HttpResponse<String> response = makeGetRequest(uri);
+            HttpResponse<String> response = HttpUtils.makeGetRequest(uri);
 
             return HttpUtils.gson.fromJson(response.body(), new TypeToken<List<UserDto>>() {
             }.getType());
@@ -36,7 +28,7 @@ public class UserService {
     public UserDto getUserById(int userId) {
         try {
             URI uri = new URI(HttpUtils.BASE_URL + "/users/" + userId);
-            HttpResponse<String> response = makeGetRequest(uri);
+            HttpResponse<String> response = HttpUtils.makeGetRequest(uri);
 
             return HttpUtils.gson.fromJson(response.body(), UserDto.class);
         } catch (URISyntaxException | InterruptedException | IOException e) {
@@ -47,7 +39,7 @@ public class UserService {
     public List<UserDto> getUserByName(String username) {
         try {
             URI uri = new URI(HttpUtils.BASE_URL + "/users?username=" + username);
-            HttpResponse<String> response = makeGetRequest(uri);
+            HttpResponse<String> response = HttpUtils.makeGetRequest(uri);
 
             return HttpUtils.gson.fromJson(response.body(), new TypeToken<List<UserDto>>() {
             }.getType());

@@ -45,12 +45,14 @@ public class View {
                 3 - Delete the user
                 4 - Get information about all users
                 5 - Get information about the user by id
-                6 - Get information about the user by username""");
+                6 - Get information about the user by username
+                7 - Get all comments on the user last post
+                8 - Get all open tasks""");
     }
 
     public int getUserInput() {
         System.out.println("\n\n-----------------------------");
-        System.out.println("Enter action number (7 - to get help):");
+        System.out.println("Enter action number [9 - to get help]:");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextInt();
     }

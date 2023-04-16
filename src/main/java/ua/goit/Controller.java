@@ -2,16 +2,16 @@ package ua.goit;
 
 import ua.goit.dto.NewUserDto;
 import ua.goit.dto.UserDto;
-import ua.goit.users.UserService;
+import ua.goit.services.UsersService;
 
 import java.util.InputMismatchException;
 
 
 public class Controller {
     private final View view;
-    private final UserService userService;
+    private final UsersService userService;
 
-    public Controller(View view, UserService userService) {
+    public Controller(View view, UsersService userService) {
         this.view = view;
         this.userService = userService;
     }
@@ -27,31 +27,15 @@ public class Controller {
                 return;
             }
             case 1 -> {
-                NewUserDto newUserDto = view.generateNewUser();
-                view.printResult(() -> userService.createUser(newUserDto)
-                        ? "Success! User created"
-                        : "An error occurred");
+                createUser();
                 break;
             }
             case 2 -> {
-                try {
-                    int userId = view.getUserId();
-                    System.out.println("Getting user info ...");
-                    UserDto updatedUser = view.updateUserData(userService.getUserById(userId));
-
-                    view.printResult(() -> userService.updateUser(updatedUser) ? "Success! User updated" : "An error occurred");
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid input. Please enter a valid integer.");
-                }
+                updateUser();
                 break;
             }
             case 3 -> {
-                try {
-                    int userId = view.getUserId();
-                    view.printResult(() -> userService.deleteUserById(userId) ? "Success! User deleted" : "An error occurred");
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid input. Please enter a valid integer.");
-                }
+                deleteUser();
                 break;
             }
             case 4 -> {
@@ -59,19 +43,14 @@ public class Controller {
                 break;
             }
             case 5 -> {
-                try {
-                    int userId = view.getUserId();
-                    view.printResult(() -> userService.getUserById(userId));
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid input. Please enter a valid integer.");
-                }
+                getUserId();
                 break;
             }
             case 6 -> {
                 view.printResult(() -> userService.getUserByName(view.getUserName()));
                 break;
             }
-            case 7 -> {
+            case 9 -> {
                 view.showInitMessage();
                 break;
             }
@@ -81,5 +60,42 @@ public class Controller {
         }
 
         parseUserCode(view.getUserInput());
+    }
+
+    private void createUser() {
+        NewUserDto newUserDto = view.generateNewUser();
+        view.printResult(() -> userService.createUser(newUserDto)
+                ? "Success! User created"
+                : "An error occurred");
+    }
+
+    private void updateUser() {
+        try {
+            int userId = view.getUserId();
+            System.out.println("Getting user info ...");
+            UserDto updatedUser = view.updateUserData(userService.getUserById(userId));
+
+            view.printResult(() -> userService.updateUser(updatedUser) ? "Success! User updated" : "An error occurred");
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid integer.");
+        }
+    }
+
+    private void deleteUser() {
+        try {
+            int userId = view.getUserId();
+            view.printResult(() -> userService.deleteUserById(userId) ? "Success! User deleted" : "An error occurred");
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid integer.");
+        }
+    }
+
+    private void getUserId() {
+        try {
+            int userId = view.getUserId();
+            view.printResult(() -> userService.getUserById(userId));
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid integer.");
+        }
     }
 }
