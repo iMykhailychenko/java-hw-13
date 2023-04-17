@@ -10,11 +10,6 @@ public record TodosDto(int userId, int id, String title, boolean completed) {
 
     @Override
     public String toString() {
-        return "TodosDto{" +
-                "userId=" + userId +
-                ", id=" + id +
-                ", title='" + title + '\'' +
-                ", completed=" + completed +
-                '}';
+        return "\n------------------\nid: " + id + "\ntitle: " + title;
     }
 }

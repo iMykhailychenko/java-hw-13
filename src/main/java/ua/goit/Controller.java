@@ -1,13 +1,12 @@
 package ua.goit;
 
-import ua.goit.dto.CommentsDto;
-import ua.goit.dto.NewUserDto;
-import ua.goit.dto.PostsDto;
-import ua.goit.dto.UserDto;
+import ua.goit.dto.*;
 import ua.goit.services.CommentsService;
 import ua.goit.services.PostsService;
 import ua.goit.services.TodosService;
 import ua.goit.services.UsersService;
+import ua.goit.utils.FileUtil;
+import ua.goit.utils.HttpUtil;
 
 import java.util.Comparator;
 import java.util.InputMismatchException;
@@ -130,7 +129,11 @@ public class Controller {
                 Optional<PostsDto> lastPost = posts.stream().max(Comparator.comparingInt(PostsDto::id));
 
                 if (lastPost.isPresent()) {
-                    return commentsService.getComments(lastPost.get().id());
+                    int postId = lastPost.get().id();
+                    List<CommentsDto> comments = commentsService.getComments(postId);
+
+                    FileUtil.write("user-" + userId + "-post-" + postId + "-comments.json", HttpUtil.gson.toJson(comments));
+                    return comments;
                 } else {
                     return "Something went wrong!";
                 }
@@ -141,5 +144,11 @@ public class Controller {
     }
 
     private void getOpenTasks() {
+        try {
+            int userId = view.getUserId();
+            view.printResult(() -> todosService.getTodos(userId).stream().filter(TodosDto::completed).toList());
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid integer.");
+        }
     }
 }
