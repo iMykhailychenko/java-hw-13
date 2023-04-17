@@ -1,6 +1,9 @@
 package ua.goit;
 
-import ua.goit.dto.*;
+import ua.goit.dto.CommentsDto;
+import ua.goit.dto.NewUserDto;
+import ua.goit.dto.PostsDto;
+import ua.goit.dto.UserDto;
 import ua.goit.services.CommentsService;
 import ua.goit.services.PostsService;
 import ua.goit.services.TodosService;
@@ -146,7 +149,7 @@ public class Controller {
     private void getOpenTasks() {
         try {
             int userId = view.getUserId();
-            view.printResult(() -> todosService.getTodos(userId).stream().filter(TodosDto::completed).toList());
+            view.printResult(() -> todosService.getTodos(userId).stream().filter(i -> !i.completed()).toList());
         } catch (InputMismatchException e) {
             System.out.println("Invalid input. Please enter a valid integer.");
         }
