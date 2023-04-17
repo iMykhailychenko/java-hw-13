@@ -99,7 +99,10 @@ public class Controller {
             System.out.println("Getting user info ...");
             UserDto updatedUser = view.updateUserData(userService.getUserById(userId));
 
-            view.printResult(() -> userService.updateUser(updatedUser) ? "Success! User updated" : "An error occurred");
+            view.printResult(() -> userService.updateUser(updatedUser)
+                    ? "Success! User updated"
+                    : "An error occurred");
+
         } catch (InputMismatchException e) {
             System.out.println("Invalid input. Please enter a valid integer.");
         }
@@ -108,7 +111,10 @@ public class Controller {
     private void deleteUser() {
         try {
             int userId = view.getUserId();
-            view.printResult(() -> userService.deleteUserById(userId) ? "Success! User deleted" : "An error occurred");
+            view.printResult(() -> userService.deleteUserById(userId)
+                    ? "Success! User deleted"
+                    : "An error occurred");
+
         } catch (InputMismatchException e) {
             System.out.println("Invalid input. Please enter a valid integer.");
         }
@@ -129,7 +135,9 @@ public class Controller {
 
             view.printResult(() -> {
                 List<PostsDto> posts = postsService.getPosts(userId);
-                Optional<PostsDto> lastPost = posts.stream().max(Comparator.comparingInt(PostsDto::id));
+                Optional<PostsDto> lastPost = posts
+                        .stream()
+                        .max(Comparator.comparingInt(PostsDto::id));
 
                 if (lastPost.isPresent()) {
                     int postId = lastPost.get().id();
@@ -149,7 +157,12 @@ public class Controller {
     private void getOpenTasks() {
         try {
             int userId = view.getUserId();
-            view.printResult(() -> todosService.getTodos(userId).stream().filter(i -> !i.completed()).toList());
+            view.printResult(() -> todosService
+                    .getTodos(userId)
+                    .stream()
+                    .filter(i -> !i.completed())
+                    .toList());
+
         } catch (InputMismatchException e) {
             System.out.println("Invalid input. Please enter a valid integer.");
         }
