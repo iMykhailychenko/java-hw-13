@@ -2,6 +2,7 @@ package ua.goit;
 
 import ua.goit.dto.*;
 
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;

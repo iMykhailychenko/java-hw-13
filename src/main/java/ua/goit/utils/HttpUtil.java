@@ -8,7 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class HttpUtils {
+public class HttpUtil {
     public static final HttpClient CLIENT = HttpClient.newHttpClient();
     public static final String BASE_URL = "https://jsonplaceholder.typicode.com";
     public static final Gson gson = new Gson();
@@ -18,6 +18,6 @@ public class HttpUtils {
                 .uri(uri)
                 .GET()
                 .build();
-        return HttpUtils.CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+        return HttpUtil.CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
     }
 }

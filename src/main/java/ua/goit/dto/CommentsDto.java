@@ -10,12 +10,6 @@ public record CommentsDto(int postId, int id, String name, String email, String 
 
     @Override
     public String toString() {
-        return "CommentsDto{" +
-                "postId=" + postId +
-                ", id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", body='" + body + '\'' +
-                '}';
+        return "\n------------------\nname:\n" + name + "\n\nbody:\n" + body;
     }
 }
