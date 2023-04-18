@@ -11,6 +11,7 @@ import ua.goit.services.UsersService;
 import ua.goit.utils.FileUtil;
 import ua.goit.utils.HttpUtil;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -18,6 +19,9 @@ import java.util.Optional;
 
 
 public class Controller {
+    private static final String NEW_USER_JSON = "new-user.json";
+    private static final String UPDATE_USER_JSON = "update-user.json";
+
     private final View view;
     private final UsersService userService;
     private final PostsService postsService;
@@ -87,24 +91,31 @@ public class Controller {
     }
 
     private void createUser() {
-        NewUserDto newUserDto = view.generateNewUser();
-        view.printResult(() -> userService.createUser(newUserDto)
-                ? "Success! User created"
-                : "An error occurred");
+        try {
+            String json = FileUtil.readFile(NEW_USER_JSON);
+            NewUserDto body = HttpUtil.gson.fromJson(json, NewUserDto.class);
+            view.printResult(() -> userService.createUser(body)
+                    ? "Success! User created"
+                    : "An error occurred"
+            );
+        } catch (IOException e) {
+            System.out.println("Error with file. Make sure you have '" + NEW_USER_JSON + "' file in 'assets' folder");
+        }
     }
 
     private void updateUser() {
         try {
-            int userId = view.getUserId();
-            System.out.println("Getting user info ...");
-            UserDto updatedUser = view.updateUserData(userService.getUserById(userId));
+            String json = FileUtil.readFile(UPDATE_USER_JSON);
+            UserDto body = HttpUtil.gson.fromJson(json, UserDto.class);
 
-            view.printResult(() -> userService.updateUser(updatedUser)
+            view.printResult(() -> userService.updateUser(body)
                     ? "Success! User updated"
-                    : "An error occurred");
-
+                    : "An error occurred"
+            );
         } catch (InputMismatchException e) {
             System.out.println("Invalid input. Please enter a valid integer.");
+        } catch (IOException e) {
+            System.out.println("Error with file. Make sure you have '" + UPDATE_USER_JSON + "' file in 'assets' folder");
         }
     }
 
@@ -143,7 +154,7 @@ public class Controller {
                     int postId = lastPost.get().id();
                     List<CommentsDto> comments = commentsService.getComments(postId);
 
-                    FileUtil.write("user-" + userId + "-post-" + postId + "-comments.json", HttpUtil.gson.toJson(comments));
+                    FileUtil.writeComments("user-" + userId + "-post-" + postId + "-comments.json", HttpUtil.gson.toJson(comments));
                     return comments;
                 } else {
                     return "Something went wrong!";

@@ -48,13 +48,14 @@ public class UsersService {
         }
     }
 
-    public boolean createUser(NewUserDto newUser) {
+    public boolean createUser(NewUserDto user) {
         try {
+            String json = HttpUtil.gson.toJson(user);
             URI uri = new URI(HttpUtil.BASE_URL + "/users");
-            String body = HttpUtil.gson.toJson(newUser);
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(uri)
-                    .POST(HttpRequest.BodyPublishers.ofString(body))
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
             HttpResponse<String> response = HttpUtil.CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -64,13 +65,14 @@ public class UsersService {
         }
     }
 
-    public boolean updateUser(UserDto updatedUser) {
+    public boolean updateUser(UserDto user) {
         try {
-            URI uri = new URI(HttpUtil.BASE_URL + "/users/" + updatedUser.id());
-            String body = HttpUtil.gson.toJson(updatedUser);
+            String json = HttpUtil.gson.toJson(user);
+            URI uri = new URI(HttpUtil.BASE_URL + "/users/" + user.id());
+
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(uri)
-                    .PUT(HttpRequest.BodyPublishers.ofString(body))
+                    .PUT(HttpRequest.BodyPublishers.ofString(json))
                     .build();
             HttpResponse<String> response = HttpUtil.CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
 
