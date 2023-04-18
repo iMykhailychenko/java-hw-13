@@ -13,7 +13,6 @@ import ua.goit.utils.HttpUtil;
 
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,7 +98,7 @@ public class Controller {
                     : "An error occurred"
             );
         } catch (IOException e) {
-            System.out.println("Error with file. Make sure you have '" + NEW_USER_JSON + "' file in 'assets' folder");
+            System.out.println("Error with file. Make sure you have valid '" + NEW_USER_JSON + "' file in 'assets' folder");
         }
     }
 
@@ -112,38 +111,28 @@ public class Controller {
                     ? "Success! User updated"
                     : "An error occurred"
             );
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input. Please enter a valid integer.");
         } catch (IOException e) {
-            System.out.println("Error with file. Make sure you have '" + UPDATE_USER_JSON + "' file in 'assets' folder");
+            System.out.println("Error with file. Make sure you have valid '" + UPDATE_USER_JSON + "' file in 'assets' folder");
         }
     }
 
     private void deleteUser() {
-        try {
-            int userId = view.getUserId();
+        view.withUserId(userId -> {
             view.printResult(() -> userService.deleteUserById(userId)
                     ? "Success! User deleted"
-                    : "An error occurred");
-
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input. Please enter a valid integer.");
-        }
+                    : "An error occurred"
+            );
+        });
     }
 
     private void getUserId() {
-        try {
-            int userId = view.getUserId();
+        view.withUserId(userId -> {
             view.printResult(() -> userService.getUserById(userId));
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input. Please enter a valid integer.");
-        }
+        });
     }
 
     private void getComments() {
-        try {
-            int userId = view.getUserId();
-
+        view.withUserId(userId -> {
             view.printResult(() -> {
                 List<PostsDto> posts = postsService.getPosts(userId);
                 Optional<PostsDto> lastPost = posts
@@ -160,22 +149,17 @@ public class Controller {
                     return "Something went wrong!";
                 }
             });
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input. Please enter a valid integer.");
-        }
+        });
     }
 
     private void getOpenTasks() {
-        try {
-            int userId = view.getUserId();
+        view.withUserId(userId -> {
             view.printResult(() -> todosService
                     .getTodos(userId)
                     .stream()
                     .filter(i -> !i.completed())
-                    .toList());
-
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input. Please enter a valid integer.");
-        }
+                    .toList()
+            );
+        });
     }
 }

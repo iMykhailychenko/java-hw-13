@@ -3,6 +3,8 @@ package ua.goit;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class View {
@@ -53,5 +55,14 @@ public class View {
         System.out.println("Enter action number [9 - to get help]:");
         Scanner scanner = new Scanner(System.in);
         return scanner.nextInt();
+    }
+
+    public void withUserId(Consumer<Integer> callback) {
+        try {
+            int userId = getUserId();
+            callback.accept(userId);
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid integer.");
+        }
     }
 }
